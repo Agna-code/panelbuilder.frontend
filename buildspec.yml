@@ -1,5 +1,12 @@
 version: 0.2
 
+env:
+  parameter-store:
+    REACT_APP_AWS_REGION: "/panelbuilder/region"
+    REACT_APP_COGNITO_USER_POOL_ID: "/panelbuilder/cognito/user-pool-id"
+    REACT_APP_COGNITO_CLIENT_ID: "/panelbuilder/cognito/user-pool-client-id"
+    REACT_APP_BACKEND_API_URL: "/panelbuilder/backend-api-url"
+
 phases:
   install:
     runtime-versions:
