@@ -2,6 +2,17 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Environment variables
+
+Copy `.env.example` to `.env` and set values:
+
+```
+REACT_APP_COGNITO_USER_POOL_ID=
+REACT_APP_COGNITO_USER_POOL_CLIENT_ID=
+```
+
+Restart the dev server after changes.
+
 ## Available Scripts
 
 In the project directory, you can run:
