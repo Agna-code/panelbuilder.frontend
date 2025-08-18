@@ -1,6 +1,10 @@
 import React, { useMemo, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { confirmSignUp, resendSignUpCode } from 'aws-amplify/auth';
+import { colors } from '../constants/colors';
+import { FormContainer } from '../common/FormContainer';
+import { FormField } from '../common/FormField';
+import { LoadingButton } from '../common/LoadingButton';
 
 const useQuery = () => {
   const { search } = useLocation();
@@ -49,46 +53,94 @@ const ConfirmSignUp: React.FC = () => {
   };
 
   return (
-    <div style={{ maxWidth: 360, margin: '64px auto', padding: 24, border: '1px solid #e5e7eb', borderRadius: 8 }}>
-      <h2 style={{ marginBottom: 16 }}>Confirm your account</h2>
-      <form onSubmit={onSubmit}>
-        <div style={{ marginBottom: 12 }}>
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{ width: '100%', padding: 8, marginTop: 4 }}
-          />
+    <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="w-full max-w-xl px-6 relative">
+        <div className="mb-10">
+          <h1
+            style={{
+              fontFamily: "'Work Sans', sans-serif",
+              fontWeight: 700,
+              fontSize: '32px',
+              lineHeight: '38px',
+              color: colors.text.primary,
+            }}
+          >
+            Confirm your account
+          </h1>
+          <p
+            style={{
+              fontFamily: "'Work Sans', sans-serif",
+              fontWeight: 400,
+              fontSize: '16px',
+              lineHeight: '19px',
+              color: colors.text.secondary,
+            }}
+          >
+            Enter the code sent to your email
+          </p>
         </div>
-        <div style={{ marginBottom: 12 }}>
-          <label htmlFor="code">Verification Code</label>
-          <input
-            id="code"
-            type="text"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            required
-            style={{ width: '100%', padding: 8, marginTop: 4 }}
-          />
+
+        <form onSubmit={onSubmit}>
+          <FormContainer className="mb-6">
+            <FormField
+              label="Email address"
+              type="email"
+              value={email}
+              onChange={setEmail}
+              placeholder="johndoe@gmail.com"
+              required
+            />
+          </FormContainer>
+
+          <FormContainer className="mb-2">
+            <FormField
+              label="Verification Code"
+              type="text"
+              value={code}
+              onChange={setCode}
+              placeholder="123456"
+              required
+            />
+          </FormContainer>
+
+          {error && (
+            <div style={{ color: colors.status.error.main }} className="mb-2">{error}</div>
+          )}
+          {info && (
+            <div style={{ color: colors.status.success.main }} className="mb-2">{info}</div>
+          )}
+
+          <LoadingButton
+            type="submit"
+            variant="primary"
+            isLoading={loading}
+            fullWidth
+            height="47px"
+            className="mb-6"
+          >
+            Confirm
+          </LoadingButton>
+        </form>
+
+        <div className="mt-2 flex items-center justify-between">
+          <LoadingButton
+            onClick={onResend}
+            disabled={resending || !email}
+            isLoading={resending}
+            loadingText="Resending..."
+            variant="custom"
+            customButtonStyle={{
+              background: 'transparent',
+              border: `1.5px solid ${colors.primary.main}`,
+              borderRadius: '4px',
+              color: colors.primary.main,
+              padding: '8px 16px',
+            }}
+          >
+            Resend Code
+          </LoadingButton>
+          <Link to="/login" style={{ color: colors.primary.main }}>Back to login</Link>
         </div>
-        {error && (
-          <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>
-        )}
-        {info && (
-          <div style={{ color: 'green', marginBottom: 12 }}>{info}</div>
-        )}
-        <button type="submit" disabled={loading} style={{ width: '100%', padding: 10 }}>
-          {loading ? 'Confirming...' : 'Confirm'}
-        </button>
-      </form>
-      <div style={{ marginTop: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <button onClick={onResend} disabled={resending || !email}>
-          {resending ? 'Resending...' : 'Resend Code'}
-        </button>
-        <Link to="/login">Back to login</Link>
       </div>
     </div>
   );
