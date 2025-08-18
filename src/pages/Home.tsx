@@ -1,20 +1,40 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { signOut } from 'aws-amplify/auth';
+import React, { useEffect, useState } from 'react';
+import ProjectDashboard from '../Projects/ProjectDashboard';
+import Navbar from '../navbar/Navbar';
+import { getCurrentUser, fetchUserAttributes } from 'aws-amplify/auth';
 
 const Home: React.FC = () => {
-  const navigate = useNavigate();
+  const [username, setUsername] = useState<string | undefined>(undefined);
 
-  const onSignOut = async () => {
-    await signOut();
-    navigate('/login', { replace: true });
-  };
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const user = await getCurrentUser();
+        let displayName: string | undefined = user.username;
+        try {
+          const attrs = await fetchUserAttributes();
+          const first = attrs.given_name || attrs.givenName || '';
+          const last = attrs.family_name || attrs.familyName || '';
+          const full = `${first} ${last}`.trim();
+          if (full) displayName = full;
+        } catch {}
+        if (mounted) setUsername(displayName);
+      } catch {
+        if (mounted) setUsername(undefined);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
-    <div style={{ maxWidth: 720, margin: '64px auto', padding: 24 }}>
-      <h2>Welcome</h2>
-      <p>You are signed in.</p>
-      <button onClick={onSignOut} style={{ marginTop: 16 }}>Sign out here</button>
+    <div className="min-h-screen bg-white">
+      <Navbar username={username} />
+      <div className="pt-16">
+        <ProjectDashboard />
+      </div>
     </div>
   );
 };
