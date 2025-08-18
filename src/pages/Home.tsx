@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     <div style={{ maxWidth: 720, margin: '64px auto', padding: 24 }}>
       <h2>Welcome</h2>
       <p>You are signed in.</p>
-      <button onClick={onSignOut} style={{ marginTop: 16 }}>Sign out</button>
+      <button onClick={onSignOut} style={{ marginTop: 16 }}>Sign out here</button>
     </div>
   );
 };
