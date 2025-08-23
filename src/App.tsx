@@ -1,14 +1,14 @@
-import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './common/ProtectedRoute';
-import Home from './pages/Home';
+import ProjectDashboard from './Projects/ProjectDashboard';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ConfirmSignUp from './pages/ConfirmSignUp';
 import { ToastProvider } from './contexts/ToastContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
+import ProtectedLayout from './common/ProtectedLayout';
 
 function App() {
   return (
@@ -17,14 +17,9 @@ function App() {
         <ConfigurationProvider>
           <BrowserRouter>
             <Routes>
-              <Route
-                path="/"
-                element={
-                  <ProtectedRoute>
-                    <Home />
-                  </ProtectedRoute>
-                }
-              />
+              <Route element={<ProtectedRoute><ProtectedLayout /></ProtectedRoute>}>
+                <Route path="/" element={<ProjectDashboard />} />
+              </Route>
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/confirm" element={<ConfirmSignUp />} />
