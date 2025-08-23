@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import NewProjectModal from './NewProjectModal';
-import { projectApi } from '../services/backendApi';
 import { PencilIcon, ClipboardDocumentIcon, TrashIcon } from '@heroicons/react/24/outline';
-import IlumentoLogo from '../../assets/ilumento-logo.svg';
 
 
 export interface Project {
