@@ -1,25 +1,52 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Panel Builder",
+  "name": "Panel Builder",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "ilumento-icon-green-400.png",
+      "sizes": "400x400",
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "logo192.png",
+      "src": "ilumento-icon-green-800.png",
+      "sizes": "800x800",
       "type": "image/png",
-      "sizes": "192x192"
+      "purpose": "any"
     },
     {
-      "src": "logo512.png",
+      "src": "ilumento-icon-green-1200.png",
+      "sizes": "1200x1200",
       "type": "image/png",
-      "sizes": "512x512"
+      "purpose": "any maskable"
+    },
+    {
+      "src": "ilumento-icon-black-400.png",
+      "sizes": "400x400",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "ilumento-icon-black-800.png",
+      "sizes": "800x800",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "ilumento-icon-white-400.png",
+      "sizes": "400x400",
+      "type": "image/png",
+      "purpose": "monochrome"
+    },
+    {
+      "src": "ilumento-icon-white-800.png",
+      "sizes": "800x800",
+      "type": "image/png",
+      "purpose": "monochrome"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#44A26E",
+  "background_color": "#F9F9F9"
 }
