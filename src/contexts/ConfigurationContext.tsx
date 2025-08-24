@@ -33,14 +33,13 @@ const ConfigurationContext = createContext<
 export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [configuration, setConfiguration] = useState<Configuration | null>(
     null
   );
   const { isAuthenticated } = useAuth();
 
   useEffect(() => {
-    console.log('isAuthenticated', isAuthenticated);
     if (isAuthenticated) {
       fetchConfiguration();
     }

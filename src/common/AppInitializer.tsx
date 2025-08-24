@@ -13,7 +13,6 @@ export const AppInitializer: React.FC<AppInitializerProps> = ({ children }) => {
   const [hasInitialized, setHasInitialized] = useState(false);
 
   useEffect(() => {
-
     // If all contexts have finished their initial load
     if (!isAuthLoading && !isConfigLoading) {
       setHasInitialized(true);
