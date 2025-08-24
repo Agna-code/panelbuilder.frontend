@@ -23,7 +23,7 @@ interface Configuration {
 interface ConfigurationContextType {
   isLoading: boolean;
   configuration: Configuration | null;
-  fetchConfiguration: () => Promise<void>;
+  fetchConfiguration: () => Promise<Configuration | undefined>;
 }
 
 const ConfigurationContext = createContext<
@@ -45,7 +45,7 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, [isAuthenticated]);
 
-  const fetchConfiguration = async () => {
+  const fetchConfiguration = async (): Promise<Configuration | undefined> => {
     setIsLoading(true);
     try {
       const response = await backendApi.get<
@@ -64,12 +64,14 @@ export const ConfigurationProvider: React.FC<{ children: React.ReactNode }> = ({
         );
         const mappedPanelTypes = panelTypes.map(mapPanelTypeResponseToPanelType);
         const mappedDevices = devices.map(mapDeviceResponseToDevice);
-
-        setConfiguration({
+        const configuration = {
           deviceTypes: mappedDeviceTypes,
           panelTypes: mappedPanelTypes,
           devices: mappedDevices,
-        });
+        };
+
+        setConfiguration(configuration);
+        return configuration;
       }
       throw new Error('Failed to fetch configuration');
     } catch (error) {
