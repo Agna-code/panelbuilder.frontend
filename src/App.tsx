@@ -1,6 +1,5 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import ProtectedRoute from './common/ProtectedRoute';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ConfirmSignUp from './pages/ConfirmSignUp';
@@ -9,18 +8,26 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import ProtectedLayout from './common/ProtectedLayout';
 import { AppInitializer } from './common/AppInitializer';
-import ProjectList from './Projects/ProjectList';
+import ProjectPage from './Projects/ProjectPage';
+import { ProjectProvider } from './contexts/ProjectContext';
 
 function App() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <ConfigurationProvider> 
+        <ConfigurationProvider>
           <AppInitializer>
             <BrowserRouter>
               <Routes>
-                <Route element={<ProtectedRoute><ProtectedLayout /></ProtectedRoute>}>
-                  <Route path="/" element={<ProjectList />} />
+                <Route element={<ProtectedLayout />}>
+                  <Route
+                    path="/"
+                    element={
+                      <ProjectProvider>
+                        <ProjectPage />
+                      </ProjectProvider>
+                    }
+                  />
                 </Route>
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
@@ -28,7 +35,7 @@ function App() {
               </Routes>
             </BrowserRouter>
           </AppInitializer>
-      </ConfigurationProvider>
+        </ConfigurationProvider>
       </AuthProvider>
     </ToastProvider>
   );

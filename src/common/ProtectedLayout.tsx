@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
 import { getCurrentUser, fetchUserAttributes } from 'aws-amplify/auth';
+import { useAuth } from '../contexts/AuthContext';
 
 const ProtectedLayout: React.FC = () => {
+  const { checking, isAuthenticated } = useAuth();
   const [username, setUsername] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -28,6 +30,9 @@ const ProtectedLayout: React.FC = () => {
       mounted = false;
     };
   }, []);
+
+  if (checking) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   return (
     <div className="min-h-screen bg-white">

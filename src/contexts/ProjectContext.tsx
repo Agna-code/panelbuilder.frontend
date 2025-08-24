@@ -18,7 +18,7 @@ interface ProjectContextType {
   fetchProjects: () => Promise<Project[]>;
   createProject: (name: string, companyName: string, location: string, fixtureCSV: File, zoneCSV: File) => Promise<ProjectDetails | null>;
   fetchProjectById: (id: string) => Promise<ProjectDetails | null>;
-  updateProject: (id: string, project: Project) => Promise<Project | null>;
+  updateProject: (id: string, project: Partial<Project>) => Promise<Project | null>;
   deleteProject: (id: string) => Promise<boolean>;
   cloneProject: (
     id: string,
@@ -80,6 +80,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
           mapFixtureResponseToFixture
         );
         const createdZones = response.data.Data.Zones.map(mapZoneResponseToZone);
+        setProjects([createdProject, ...projects]);
         return { project: createdProject, fixtures: createdFixtures, zones: createdZones };
       }
       throw new Error('Failed to create project');
@@ -113,7 +114,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateProject = async (
     id: string,
-    project: Project
+    project: Partial<Project>
   ): Promise<Project | null> => {
     try {
       const response = await backendApi.put<ResponseData<ProjectResponse>>(
