@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import ProjectDashboard from '../Projects/ProjectDashboard';
+import { Navigate, Outlet } from 'react-router-dom';
 import Navbar from '../navbar/Navbar';
 import { getCurrentUser, fetchUserAttributes } from 'aws-amplify/auth';
+import { useAuth } from '../contexts/AuthContext';
 
-const Home: React.FC = () => {
+const ProtectedLayout: React.FC = () => {
+  const { checking, isAuthenticated } = useAuth();
   const [username, setUsername] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -14,8 +16,8 @@ const Home: React.FC = () => {
         let displayName: string | undefined = user.username;
         try {
           const attrs = await fetchUserAttributes();
-          const first = attrs.given_name || attrs.givenName || '';
-          const last = attrs.family_name || attrs.familyName || '';
+          const first = (attrs as any).given_name || (attrs as any).givenName || '';
+          const last = (attrs as any).family_name || (attrs as any).familyName || '';
           const full = `${first} ${last}`.trim();
           if (full) displayName = full;
         } catch {}
@@ -29,16 +31,19 @@ const Home: React.FC = () => {
     };
   }, []);
 
+  if (checking) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+
   return (
     <div className="min-h-screen bg-white">
       <Navbar username={username} />
       <div className="pt-16">
-        <ProjectDashboard />
+        <Outlet />
       </div>
     </div>
   );
 };
 
-export default Home;
+export default ProtectedLayout;
 
 

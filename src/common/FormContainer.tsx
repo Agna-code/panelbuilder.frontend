@@ -12,7 +12,6 @@ interface FormContainerProps {
 
 export const FormContainer: React.FC<FormContainerProps> = ({
   children,
-  width = '444px',
   height = '56px',
   left = '155px',
   top = '474px',
@@ -20,7 +19,6 @@ export const FormContainer: React.FC<FormContainerProps> = ({
   className = ''
 }) => {
   const containerStyles: React.CSSProperties = {
-    width,
     height,
     left,
     top,
