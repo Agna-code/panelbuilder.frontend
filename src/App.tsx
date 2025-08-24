@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './common/ProtectedRoute';
-import ProjectDashboard from './Projects/ProjectDashboard';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
 import ConfirmSignUp from './pages/ConfirmSignUp';
@@ -9,22 +8,26 @@ import { ToastProvider } from './contexts/ToastContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { ConfigurationProvider } from './contexts/ConfigurationContext';
 import ProtectedLayout from './common/ProtectedLayout';
+import { AppInitializer } from './common/AppInitializer';
+import ProjectList from './Projects/ProjectList';
 
 function App() {
   return (
     <ToastProvider>
       <AuthProvider>
-        <ConfigurationProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<ProtectedRoute><ProtectedLayout /></ProtectedRoute>}>
-                <Route path="/" element={<ProjectDashboard />} />
-              </Route>
-              <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/confirm" element={<ConfirmSignUp />} />
-            </Routes>
-          </BrowserRouter>
+        <ConfigurationProvider> 
+          <AppInitializer>
+            <BrowserRouter>
+              <Routes>
+                <Route element={<ProtectedRoute><ProtectedLayout /></ProtectedRoute>}>
+                  <Route path="/" element={<ProjectList />} />
+                </Route>
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/confirm" element={<ConfirmSignUp />} />
+              </Routes>
+            </BrowserRouter>
+          </AppInitializer>
       </ConfigurationProvider>
       </AuthProvider>
     </ToastProvider>

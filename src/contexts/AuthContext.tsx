@@ -8,6 +8,7 @@ interface AuthUser {
 }
 
 interface AuthContextType {
+  isLoading: boolean;
   isAuthenticated: boolean;
   user: AuthUser | null;
   checking: boolean;
@@ -18,11 +19,13 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isLoading, setIsLoading] = useState(true);
   const [checking, setChecking] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<AuthUser | null>(null);
 
   const evaluateAuth = useCallback(async () => {
+    setIsLoading(true);
     try {
       const session = await fetchAuthSession();
       const isAuthed = !!session.tokens?.idToken;
@@ -36,6 +39,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {
       setIsAuthenticated(false);
       setUser(null);
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
@@ -75,12 +80,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [refresh]);
 
   const value = useMemo<AuthContextType>(() => ({
+    isLoading,
     isAuthenticated,
     user,
     checking,
     refresh,
     logout,
-  }), [isAuthenticated, user, checking, refresh, logout]);
+  }), [isAuthenticated, user, checking, refresh, logout, isLoading]);
 
   return (
     <AuthContext.Provider value={value}>

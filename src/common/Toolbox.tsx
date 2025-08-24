@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useDraggable } from '@dnd-kit/core';
-import { DeviceType } from '../types';
-import { configurationApi } from '../services/backendApi';
+import { Device, DeviceType } from '../types/configuration';
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useConfiguration } from '../contexts/ConfigurationContext';
 
 interface DraggableItemProps {
   item: DeviceType;
@@ -11,7 +11,7 @@ interface DraggableItemProps {
 function DraggableItem({ item }: DraggableItemProps) {
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: item.id,
-    data: item
+    data: item,
   });
 
   return (
@@ -35,7 +35,12 @@ interface CategoryGroupProps {
   onToggle: () => void;
 }
 
-function CategoryGroup({ title, items, isExpanded, onToggle }: CategoryGroupProps) {
+function CategoryGroup({
+  title,
+  items,
+  isExpanded,
+  onToggle,
+}: CategoryGroupProps) {
   return (
     <div className="mb-1">
       <button
@@ -51,7 +56,7 @@ function CategoryGroup({ title, items, isExpanded, onToggle }: CategoryGroupProp
       </button>
       {isExpanded && (
         <div className="ml-4">
-          {items.map(device => (
+          {items.map((device) => (
             <DraggableItem key={device.id} item={device} />
           ))}
         </div>
@@ -61,78 +66,32 @@ function CategoryGroup({ title, items, isExpanded, onToggle }: CategoryGroupProp
 }
 
 const Toolbox: React.FC = () => {
-  const [deviceTypes, setDeviceTypes] = useState<DeviceType[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-
-  useEffect(() => {
-    const fetchDeviceTypes = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response: DeviceType[] = await configurationApi.getDeviceTypes();
-        setDeviceTypes(response);
-
-        const categories = Array.from(new Set(response.map((device: DeviceType) => device.category || 'Other')));
-        const initialExpandedState: Record<string, boolean> = categories.reduce<Record<string, boolean>>((acc, category) => {
-          acc[String(category)] = true;
-          return acc;
-        }, {});
-        setExpandedCategories(initialExpandedState);
-      } catch (err: any) {
-        console.error('Failed to fetch device types:', err);
-        setError(err.message || 'Failed to load components');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDeviceTypes();
-  }, []);
+  const { configuration } = useConfiguration();
+  const [expandedCategories, setExpandedCategories] = useState<
+    Record<string, boolean>
+  >(
+    configuration?.deviceTypes.reduce<Record<string, boolean>>(
+      (acc, deviceType) => {
+        acc[deviceType.name] = true;
+        return acc;
+      },
+      {}
+    ) || {}
+  );
 
   const toggleCategory = (category: string) => {
-    setExpandedCategories(prev => ({
+    setExpandedCategories((prev) => ({
       ...prev,
-      [category]: !prev[category]
+      [category]: !prev[category],
     }));
   };
 
   // Group device types by category
-  const groupedDevices = deviceTypes.reduce((acc, device) => {
-    const category = device.category || 'Other';
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(device);
+  const groupedDevices = configuration?.deviceTypes.reduce((acc, deviceType) => {
+    const category = deviceType.name;
+    acc[category] = configuration?.devices.filter(device => device.deviceTypeId === deviceType.id) || [];
     return acc;
-  }, {} as Record<string, DeviceType[]>);
-
-  if (loading) {
-    return (
-      <div>
-        <div className="px-4 py-3 bg-white border-b">
-          <h2 className="text-base font-medium">Tool Box</h2>
-        </div>
-        <div className="p-4">
-          <div className="text-sm text-gray-500">Loading components...</div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div>
-        <div className="px-4 py-3 bg-white border-b">
-          <h3 className="text-base font-medium">Tool Box</h3>
-        </div>
-        <div className="p-4">
-          <div className="text-sm text-red-500">{error}</div>
-        </div>
-      </div>
-    );
-  }
+  }, {} as Record<string, Device[]>) || {};
 
   return (
     <div className="h-full">
