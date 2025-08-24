@@ -52,7 +52,6 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    console.log('handleSubmit', formData);
     e.preventDefault();
     try {
       setIsLoading(true);
