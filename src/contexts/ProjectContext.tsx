@@ -117,7 +117,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({
     project: Partial<Project>
   ): Promise<Project | null> => {
     try {
-      const response = await backendApi.put<ResponseData<ProjectResponse>>(
+      const response = await backendApi.patch<ResponseData<ProjectResponse>>(
         `/projects/${id}`,
         project
       );
