@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, Navigate } from 'react-router-dom';
 import { signIn } from 'aws-amplify/auth';
 import { colors } from '../constants/colors';
 import { LoadingButton } from '../common/LoadingButton';
 import { FormField } from '../common/FormField';
 import { PasswordInput } from '../common/PasswordInput';
 import { FormContainer } from '../common/FormContainer';
+import { useAuth } from '../contexts/AuthContext';
 
 const Login: React.FC = () => {
+  const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,6 +30,10 @@ const Login: React.FC = () => {
       setLoading(false);
     }
   };
+
+  if (!isAuthLoading && isAuthenticated) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-white">
